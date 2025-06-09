@@ -1,7 +1,6 @@
-import { startTransition, useEffect, useState, type JSX, type SetStateAction } from 'react'
-import './App.css'
-import { Center, Collection, CollectionRow, Filter, FilterListSkeleton, Pagination, Search } from '@vtex/shoreline'
-
+import { useState, type JSX, type SetStateAction } from 'react'
+import { Button, Center, Collection, CollectionRow, Filter, Pagination, Search } from '@vtex/shoreline'
+import PokemonFetch from './PokemonFetch';
 
 function PokeCard() : JSX.Element{
   return <></>; 
@@ -30,11 +29,23 @@ function Pokedex() : JSX.Element{
 }
 
 function App() {
-  return (
-    <Center>
-      <Pokedex />
-    </Center>
-  )
+  var pf = new PokemonFetch();
+
+  var [value, setValue] = useState({results:[]});
+  var [error, setError] : any = useState(null);
+
+  function update(){
+    pf.fetchAll().then(  (res)=>res.json().then((value)=>setValue(value), (error)=>setError(error)), (error)=>setError(error));
+  }
+
+  return (<>
+    <Button onClick={update}>oiiiii</Button>
+    
+    {value.results.map((poke : any) => (
+      <Center key={poke.name}>{poke.name} <br></br></Center>
+    ))}
+
+  </>)
 }
 
 export default App
