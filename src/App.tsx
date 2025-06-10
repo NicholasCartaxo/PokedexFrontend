@@ -1,10 +1,8 @@
-import { useState, type JSX, type SetStateAction } from 'react'
-import { Button, Center, Collection, CollectionRow, Filter, Pagination, Search } from '@vtex/shoreline'
-import PokemonFetch from './PokemonFetch';
+import { useEffect, useState, type Dispatch, type JSX, type SetStateAction } from 'react'
+import { Button, Center, Collection, CollectionRow, Filter, Flex, Pagination, Search } from '@vtex/shoreline'
+import { PokemonFetch, PokemonFull, PokemonLight } from './PokemonController';
+import { PokeCard } from './PokemonComponents';
 
-function PokeCard() : JSX.Element{
-  return <></>; 
-}
 
 function FilterSearch({label} : {label : string}) : JSX.Element{
 
@@ -31,19 +29,45 @@ function Pokedex() : JSX.Element{
 function App() {
   var pf = new PokemonFetch();
 
-  var [value, setValue] = useState({results:[]});
-  var [error, setError] : any = useState(null);
+  var [pokesLight, setPokesLight] = useState([] as PokemonLight[]);
+  var [pokesFull, setPokesFull] = useState([] as PokemonFull[]);
+  var [id, setId] : any = useState(1)
 
-  function update(){
-    pf.fetchAll().then(  (res)=>res.json().then((value)=>setValue(value), (error)=>setError(error)), (error)=>setError(error));
-  }
+  var [ready, setReady] = useState(false);
+
+
+  useEffect(()=>{
+    setReady(false)
+
+    pf.fetchAll().then((pokemonList)=>{
+      setPokesLight(pokemonList)
+    });
+    
+  }, [id]);
+
+
+  useEffect(()=>{
+    if(pokesLight.length == 0) return;
+
+    const promises = pokesLight.slice((id-1)*20,(id)*20).map((pokeLight, idx)=>{
+      return pokeLight.fetchPokemonFull().then((pokeFull)=>{
+        return pokeFull;
+      });
+    });
+
+    Promise.all(promises).then((newPokesFull)=>setPokesFull(newPokesFull));
+    
+    //setPokesFull(newPokesFull);
+
+    setReady(true);
+    
+  }, [pokesLight]);
+  
 
   return (<>
-    <Button onClick={update}>oiiiii</Button>
+    <input type='number' onChange={e => setId(e.target.value)} value={id} ></input>
+    {ready ? <Flex>{pokesFull.map((poke)=><PokeCard key={poke.name} pokemon={poke}></PokeCard>)}</Flex> : null} 
     
-    {value.results.map((poke : any) => (
-      <Center key={poke.name}>{poke.name} <br></br></Center>
-    ))}
 
   </>)
 }
