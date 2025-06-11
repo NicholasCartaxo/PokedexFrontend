@@ -14,29 +14,29 @@ function Pokedex() : JSX.Element{
   var [page, setPage] = useState(1);
   var [search, setSearch] = useState('');
 
+  
   useEffect(()=>{
-
-    pf.fetchAll().then((pokemonList)=>{
+    
+    pf.fetchAllPokemon().then((pokemonList)=>{
       if(search.trim() == '') setPokesLight(pokemonList);
-
+      
       else{
-        const filteredList = pokemonList.filter((pokemon) => pokemon.name.includes(search));
+        const filteredList = pokemonList.filter((pokemon) => pokemon.name.includes(search.trim()));
         setPokesLight(filteredList);
       }
     });
     
   }, [search]);
 
-
+  
   useEffect(()=>{
-    if(pokesLight.length == 0) return;
-
+    
     const promises = pokesLight.slice((page-1)*POKES_PER_PAGE,page*POKES_PER_PAGE).map((pokeLight)=>{
       return pokeLight.fetchPokemonFull().then((pokeFull)=>{
-        return pokeFull;
+        return pokeFull.fetchFullTypes().then((pokeFullTyped)=>{console.log(pokeFullTyped);return pokeFullTyped;});
       });
     });
-
+    
     Promise.all(promises).then((newPokesFull)=>setPokesFull(newPokesFull));
     
   }, [page,pokesLight]);
