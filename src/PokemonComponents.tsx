@@ -8,7 +8,7 @@ export function PokeCard({pokemon} : {pokemon : PokemonFull}) : JSX.Element{
   <div>
     <img src={pokemon.imgUrl} />
     <div>{pokemon.name} #{pokemon.id}</div>
-    <div>{pokemon.types.map((type)=><img src={type.imgUrl} />)}</div>
+    <div>{pokemon.types.map((type)=><img src={type.imgUrl} key={type.name} />)}</div>
   </div>
   ); 
 }

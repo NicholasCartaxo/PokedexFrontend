@@ -118,7 +118,8 @@ export class TypeLight{
 
 type TypeFullJson = {name : string,
                      pokemon : {pokemon : PokemonLightJson}[],
-                     sprites : {"generation-ix" : {"scarlet-violet" : {name_icon : string}}}};
+                     sprites : {"generation-ix" : {"scarlet-violet" : {name_icon : string}},
+                                "generation-iv" : {"diamond-pearl" : {name_icon : string}}}};
 
 export class TypeFull{
     
@@ -128,7 +129,9 @@ export class TypeFull{
     
     public constructor(json : TypeFullJson){
         this.name = json.name;
-        this.imgUrl = json.sprites["generation-ix"]["scarlet-violet"].name_icon;
+        this.imgUrl = json.sprites["generation-ix"]["scarlet-violet"].name_icon != null ? 
+        json.sprites["generation-ix"]["scarlet-violet"].name_icon : json.sprites["generation-iv"]["diamond-pearl"].name_icon;
+        
         this.pokemons = json.pokemon.map((pokemonJson) => new PokemonLight(pokemonJson.pokemon));
     }
 
