@@ -1,3 +1,7 @@
+function formatName(name : string) : string{
+    return name.replace(/-/g,' ').replace(/(?:^|\s|["'([{])+\S/g, match => match.toUpperCase());
+}
+
 export class PokemonFetch{
 
     private static readonly POKEAPI_URL = "https://pokeapi.co/api/v2/pokemon/?limit=2000";
@@ -30,7 +34,7 @@ export class PokemonLight{
     private readonly url : string;
 
     public constructor(json : PokemonLightJson){
-        this.name = json.name;
+        this.name = formatName(json.name);
         this.url = json.url;
     }
 
@@ -66,7 +70,7 @@ export class PokemonFull{
     private _types : TypeFull[];
     
     public constructor(json : PokemonFullJson){
-        this.name = json.name;
+        this.name = formatName(json.name)
         this.imgUrl = json.sprites.other.showdown.front_default != null ? json.sprites.other.showdown.front_default : json.sprites.front_default;
         this.height = json.height;
         this.weight = json.weight;

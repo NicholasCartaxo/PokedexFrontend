@@ -1,10 +1,14 @@
 import { useEffect, useState, type JSX } from 'react'
-import { Collection, CollectionRow, CollectionView, Filter, FilterItem, Flex, Pagination, Search, Stack } from '@vtex/shoreline'
+import { Collection, CollectionRow, CollectionView, Filter, FilterItem, Grid, Pagination, Search, Stack } from '@vtex/shoreline'
 import { PokemonFetch, PokemonFull, PokemonLight, TypeFull } from './PokemonController';
 import { PokeCard } from './PokemonComponents';
+import './mainPage.css';
+
 
 const POKES_PER_PAGE = 20;
 const TYPE_FILTER_NAME = "Types";
+const GRID_ROWS = 4;
+const GRID_COLUMNS = 5;
 
 function getIntersectionPokeLight(arr1 : PokemonLight[], arr2 : PokemonLight[]) : PokemonLight[] {
   return [arr1, arr2]?.reduce((acc, currentValue) => {
@@ -29,13 +33,17 @@ function Pokedex() : JSX.Element{
   var [searchType, setSearchType] = useState('');
   var [typesFull, setTypesFull] = useState([] as TypeFull[]);
   
+  var [loading, setLoading] = useState(false);
 
   function filterPokesLight(rawPokesLight : PokemonLight[]) : void {
     if(search.trim() != '') {
-        rawPokesLight = rawPokesLight.filter((pokemon) => pokemon.name.includes(search.trim()));
+        rawPokesLight = rawPokesLight.filter((pokemon) => pokemon.name.toLowerCase().includes(search.trim().toLowerCase()));
     }
     setPokesLight(rawPokesLight);
+    console.log("aa")
+    setPage(1);
   }
+
 
   useEffect(()=>{
     
@@ -52,7 +60,6 @@ function Pokedex() : JSX.Element{
           for(var i=1;i<typesFull.length;i++){
             pokesLightTypeFiltered = getIntersectionPokeLight(pokesLightTypeFiltered,typesFull[i].pokemons);
           }
-          console.log(pokesLightTypeFiltered)
           filterPokesLight(pokesLightTypeFiltered);
 
         });
@@ -62,27 +69,28 @@ function Pokedex() : JSX.Element{
     }
     else{
       pf.fetchAllPokemon().then((pokemonList)=>filterPokesLight(pokemonList));
-      setPage(1);
     }
 
   }, [search, typesFiltered]);
 
 
-
   useEffect(()=>{
     
+    setLoading(true);
+
     const promises = pokesLight.slice((page-1)*POKES_PER_PAGE,page*POKES_PER_PAGE).map((pokeLight)=>{
       return pokeLight.fetchPokemonFull().then((pokeFull)=>{
         return pokeFull.fetchFullTypes().then((pokeFullTyped)=>{return pokeFullTyped;});
       });
     });
     
-    Promise.all(promises).then((newPokesFull)=>setPokesFull(newPokesFull));
+    Promise.all(promises).then((newPokesFull)=>{
+      setPokesFull(newPokesFull)
+      setLoading(false);
+    });
     
   }, [page,pokesLight]);
   
-
-
 
   useEffect(()=>{
 
@@ -119,9 +127,11 @@ function Pokedex() : JSX.Element{
       </CollectionRow>
 
       <CollectionView status="ready">
-        <Flex>
-          {pokesFull.map((poke)=><PokeCard key={poke.name} pokemon={poke}></PokeCard>)}
-        </Flex>
+
+        <Grid id='PokedexGrid' columns={`repeat(${GRID_COLUMNS},1fr)`} rows={`repeat(${GRID_ROWS},1fr)`}>
+          {pokesFull.map((poke)=><PokeCard key={poke.name} pokemon={poke}/>)}
+        </Grid>
+  
       </CollectionView>
     
     </Collection>
