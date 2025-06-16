@@ -2,21 +2,20 @@
     margin: 1rem 10rem;
 }
 
+#PokedexGrid *{
+    box-sizing: border-box;
+}
+
 .PokeCard{
     background-color: var(--sl-bg-base-strong);
     border: var(--sl-border-base-strong);
     border-radius: var(--sl-radius-3);
     padding: 1rem 0.5rem 0.5rem;   
-    min-height: 20rem;
-
+    min-height: 30rem;
 }
 
-.PokeCard .Flex{
-    height: 100%;
-}
-
-.PokeCard .PokemonImg {
-    height: 100%;
+.PokeCard .PokemonImg{
+    height: 50%;
     object-fit: contain;
 }
 

@@ -1,6 +1,6 @@
 import { useEffect, useState, type JSX } from 'react'
 import { Center, Collection, CollectionRow, CollectionView, Filter, FilterItem, FilterListSkeleton, Flex, Grid, Pagination, Search, Skeleton, Stack } from '@vtex/shoreline'
-import { PokemonFetch, PokemonFull, PokemonLight, TypeFull } from './PokemonController';
+import { PokemonFetch, PokemonFull, PokemonLight, TypeFull } from '../PokemonController';
 import { PokeCard } from './PokemonComponents';
 import './mainPage.css';
 
@@ -135,7 +135,7 @@ function Pokedex() : JSX.Element{
           <Grid id='PokedexGrid' columns={`repeat(${GRID_COLUMNS},1fr)`} rows={`repeat(${GRID_ROWS},1fr)`}>
             
             {loading ? 
-              Array(20).fill("10rem",0,20).map((s)=><Skeleton style={{width:s,height:s}}/>)
+              Array(20).fill(-1,0,POKES_PER_PAGE).map((_)=><Skeleton className='PokeCard'/>)
               :
               pokesFull.map((poke)=><PokeCard key={poke.name} pokemon={poke}/>)}
           </Grid>

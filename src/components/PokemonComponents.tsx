@@ -1,5 +1,5 @@
 import type { JSX } from "react";
-import type { PokemonFull } from "./PokemonController";
+import type { PokemonFull } from "../PokemonController";
 import { Flex, Text } from "@vtex/shoreline";
 
 

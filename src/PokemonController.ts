@@ -39,7 +39,6 @@ export class PokemonLight{
     }
 
     public async fetchPokemonFull() : Promise<PokemonFull>{
-        await new Promise(resolve => setTimeout(resolve,2000));
         const response = await fetch(this.url);
         if (!response.ok) {
             throw new Error(`Response status: ${response.status}`);
