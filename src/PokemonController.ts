@@ -39,6 +39,7 @@ export class PokemonLight{
     }
 
     public async fetchPokemonFull() : Promise<PokemonFull>{
+        await new Promise(resolve => setTimeout(resolve,2000));
         const response = await fetch(this.url);
         if (!response.ok) {
             throw new Error(`Response status: ${response.status}`);
@@ -52,7 +53,9 @@ export class PokemonLight{
 }
 
 type PokemonFullJson = {name : string, 
-                        sprites : {front_default: string,other:{showdown: {front_default : string}}}, 
+                        sprites : {front_default: string,other:
+                            {showdown: {front_default : string},
+                             "official-artwork": {front_default : string}}}, 
                         height : number, 
                         weight : number, 
                         id : number, 
@@ -71,7 +74,7 @@ export class PokemonFull{
     
     public constructor(json : PokemonFullJson){
         this.name = formatName(json.name)
-        this.imgUrl = json.sprites.other.showdown.front_default != null ? json.sprites.other.showdown.front_default : json.sprites.front_default;
+        this.imgUrl = json.sprites.other.showdown.front_default != null ? json.sprites.other.showdown.front_default : json.sprites.other["official-artwork"].front_default;
         this.height = json.height;
         this.weight = json.weight;
         this.id = json.id;

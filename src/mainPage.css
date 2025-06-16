@@ -1,17 +1,11 @@
-*{
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
-
 #PokedexGrid{
     margin: 1rem 10rem;
 }
 
 .PokeCard{
-    background-color: gainsboro;
-    border: 0.25rem solid gray;
-    border-radius: 1rem;
+    background-color: var(--sl-bg-base-strong);
+    border: var(--sl-border-base-strong);
+    border-radius: var(--sl-radius-3);
     padding: 1rem 0.5rem 0.5rem;   
     min-height: 20rem;
 

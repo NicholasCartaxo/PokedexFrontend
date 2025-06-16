@@ -1,5 +1,5 @@
 import { useEffect, useState, type JSX } from 'react'
-import { Collection, CollectionRow, CollectionView, Filter, FilterItem, Grid, Pagination, Search, Stack } from '@vtex/shoreline'
+import { Center, Collection, CollectionRow, CollectionView, Filter, FilterItem, FilterListSkeleton, Flex, Grid, Pagination, Search, Skeleton, Stack } from '@vtex/shoreline'
 import { PokemonFetch, PokemonFull, PokemonLight, TypeFull } from './PokemonController';
 import { PokeCard } from './PokemonComponents';
 import './mainPage.css';
@@ -111,29 +111,38 @@ function Pokedex() : JSX.Element{
   }, [searchType])
 
 
+  console.log(loading)
+
   return(
     <Collection>
 
       <CollectionRow>
         <Stack horizontal>
           <Search value={search} onChange={(e)=>setSearch(e.target.value)}/>
+          
           <Filter label={TYPE_FILTER_NAME} searchValue={searchType} setSearchValue={(newVal)=>setSearchType(newVal)} 
-                  value={typesFiltered} setValue={setTypesFiltered} >
-            {typesFull.map((type)=><FilterItem key={type.name} value={type.name}><img src={type.imgUrl}/></FilterItem>)}
+                  value={typesFiltered} setValue={setTypesFiltered}>
+              {typesFull.map((type)=><FilterItem key={type.name} value={type.name}  ><img src={type.imgUrl}/></FilterItem>)}
           </Filter>
+
         </Stack>
         <Pagination onPageChange={(newPage)=>setPage(newPage)} page={page} total={pokesLight.length} size={POKES_PER_PAGE}/>
 
       </CollectionRow>
 
-      <CollectionView status="ready">
+        <CollectionView status={pokesFull.length||loading ? "ready" : "not-found"}>
 
-        <Grid id='PokedexGrid' columns={`repeat(${GRID_COLUMNS},1fr)`} rows={`repeat(${GRID_ROWS},1fr)`}>
-          {pokesFull.map((poke)=><PokeCard key={poke.name} pokemon={poke}/>)}
-        </Grid>
-  
-      </CollectionView>
-    
+          <Grid id='PokedexGrid' columns={`repeat(${GRID_COLUMNS},1fr)`} rows={`repeat(${GRID_ROWS},1fr)`}>
+            
+            {loading ? 
+              Array(20).fill("10rem",0,20).map((s)=><Skeleton style={{width:s,height:s}}/>)
+              :
+              pokesFull.map((poke)=><PokeCard key={poke.name} pokemon={poke}/>)}
+          </Grid>
+
+        </CollectionView>
+      
+
     </Collection>
   );
 
