@@ -1,10 +1,9 @@
 import type { JSX } from "react";
-import { Outlet } from "react-router-dom";
+import { Link, Outlet } from "react-router-dom";
 
 function Layout() : JSX.Element{
 
-    return <>TODO
-    <br/>
+    return <><Link to="/">Pokedex</Link>
     
     <Outlet />
 

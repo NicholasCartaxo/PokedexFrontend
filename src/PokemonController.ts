@@ -73,7 +73,7 @@ export class PokemonFull{
     
     public constructor(json : PokemonFullJson){
         this.name = formatName(json.name)
-        this.imgUrl = json.sprites.other.showdown.front_default != null ? json.sprites.other.showdown.front_default : json.sprites.other["official-artwork"].front_default;
+        this.imgUrl = json.sprites.other["official-artwork"].front_default
         this.height = json.height;
         this.weight = json.weight;
         this.id = json.id;
