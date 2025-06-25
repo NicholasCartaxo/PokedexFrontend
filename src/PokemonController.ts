@@ -58,7 +58,8 @@ type PokemonFullJson = {name : string,
                         height : number, 
                         weight : number, 
                         id : number, 
-                        types : {type : TypeLightJson}[]
+                        types : {type : TypeLightJson}[],
+                        stats : StatJson[]
                     }
 
 export class PokemonFull{
@@ -69,7 +70,8 @@ export class PokemonFull{
     public readonly weight : number;
     public readonly id : number;
     private readonly typesLight : TypeLight[];
-    private _types : TypeFull[];
+    public types : TypeFull[];
+    public readonly stats : Stat[];
     
     public constructor(json : PokemonFullJson){
         this.name = formatName(json.name)
@@ -77,13 +79,11 @@ export class PokemonFull{
         this.height = json.height;
         this.weight = json.weight;
         this.id = json.id;
-        this._types = [];
+        this.types = [];
 
         this.typesLight =  json.types.map((typeJson) =>{return new TypeLight(typeJson.type);})
-    }
 
-    public get types(){
-        return this._types;
+        this.stats = json.stats.map((statJson) => {return new Stat(statJson);});
     }
 
     public async fetchFullTypes() : Promise<PokemonFull>{
@@ -92,7 +92,7 @@ export class PokemonFull{
         });
 
         return Promise.all(promises).then((typesFull)=>{
-            this._types = typesFull
+            this.types = typesFull
             return this;
         });
     }
@@ -141,4 +141,20 @@ export class TypeFull{
         this.pokemons = json.pokemon.map((pokemonJson) => new PokemonLight(pokemonJson.pokemon));
     }
 
+}
+
+
+
+type StatJson = {base_stat : number,
+                 stat : {name : string}
+                }
+
+export class Stat{
+    public readonly name : string;
+    public readonly value : number;
+
+    public constructor(json : StatJson){
+        this.name = formatName(json.stat.name);
+        this.value = json.base_stat;
+    }
 }

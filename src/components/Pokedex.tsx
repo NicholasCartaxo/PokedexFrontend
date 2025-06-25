@@ -1,8 +1,8 @@
 import { useEffect, useState, type JSX } from 'react'
-import { Center, Collection, CollectionRow, CollectionView, Filter, FilterItem, FilterListSkeleton, Flex, Grid, Pagination, Search, Skeleton, Stack } from '@vtex/shoreline'
+import { Collection, CollectionRow, CollectionView, Filter, FilterItem, Grid, Pagination, Search, Skeleton, Stack } from '@vtex/shoreline'
 import { PokemonFetch, PokemonFull, PokemonLight, TypeFull } from '../PokemonController';
 import { PokeCard } from './PokemonComponents';
-import './mainPage.css';
+import './pokedex.css';
 
 
 const POKES_PER_PAGE = 20;
@@ -40,7 +40,6 @@ function Pokedex() : JSX.Element{
         rawPokesLight = rawPokesLight.filter((pokemon) => pokemon.name.toLowerCase().includes(search.trim().toLowerCase()));
     }
     setPokesLight(rawPokesLight);
-    console.log("aa")
     setPage(1);
   }
 
@@ -111,10 +110,8 @@ function Pokedex() : JSX.Element{
   }, [searchType])
 
 
-  console.log(loading)
-
   return(
-    <Collection>
+    <Collection id='Pokedex'>
 
       <CollectionRow>
         <Stack horizontal>
@@ -135,7 +132,7 @@ function Pokedex() : JSX.Element{
           <Grid id='PokedexGrid' columns={`repeat(${GRID_COLUMNS},1fr)`} rows={`repeat(${GRID_ROWS},1fr)`}>
             
             {loading ? 
-              Array(20).fill(-1,0,POKES_PER_PAGE).map((_)=><Skeleton className='PokeCard'/>)
+              Array(20).fill(-1,0,POKES_PER_PAGE).map((_,i)=><Skeleton key={i} className='PokeCard'/>)
               :
               pokesFull.map((poke)=><PokeCard key={poke.name} pokemon={poke}/>)}
           </Grid>

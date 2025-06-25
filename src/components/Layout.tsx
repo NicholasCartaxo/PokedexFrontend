@@ -1,12 +1,15 @@
+import { Heading } from "@vtex/shoreline";
 import type { JSX } from "react";
-import { Link, Outlet } from "react-router-dom";
+import { Outlet, useNavigate } from "react-router-dom";
+import "./layout.css";
 
 function Layout() : JSX.Element{
 
-    return <><Link to="/">Pokedex</Link>
-    
-    <Outlet />
+     const navigate = useNavigate();
 
+    return <>
+        <div style={{display:"inline-block"}}><Heading className="clickable" level={1} onClick={()=>navigate("/")}>Pokedex</Heading></div>
+        <Outlet />
     </>
     
 }
