@@ -17,7 +17,7 @@ export function PokeCard({pokemon} : {pokemon : PokemonFull}) : JSX.Element{
         <Text variant="emphasis">#{(pokemon.id+"").padStart(4,'0')}</Text>
       </Flex>
 
-      <Flex className="Types" direction="column" gap="var(--sl-space-2)">
+      <Flex className="Types" direction="column" justify="center" gap="var(--sl-space-2)">
         {pokemon.types.map((type)=><img src={type.imgUrl} key={type.name} />)}
       </Flex>
       

@@ -66,6 +66,7 @@ export class PokemonFull{
     
     public readonly name : string;
     public readonly imgUrl : string;
+    public readonly imgUrlGif : string;
     public readonly height : number;
     public readonly weight : number;
     public readonly id : number;
@@ -76,6 +77,7 @@ export class PokemonFull{
     public constructor(json : PokemonFullJson){
         this.name = formatName(json.name)
         this.imgUrl = json.sprites.other["official-artwork"].front_default
+        this.imgUrlGif = json.sprites.other.showdown.front_default;
         this.height = json.height;
         this.weight = json.weight;
         this.id = json.id;

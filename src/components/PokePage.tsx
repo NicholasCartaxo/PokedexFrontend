@@ -1,7 +1,7 @@
-import type { JSX } from "react";
+import { useEffect, useState, type JSX } from "react";
 import type { PokemonFull, Stat } from "../PokemonController";
 import { useLocation } from "react-router-dom";
-import { Flex, Grid, Heading, Text, Tooltip } from "@vtex/shoreline";
+import { Center, Checkbox, Flex, Grid, Heading, Text, Tooltip } from "@vtex/shoreline";
 import './pokepage.css';
 
 const MAX_STAT = 255;
@@ -24,6 +24,7 @@ function PokePage() : JSX.Element{
     const location = useLocation();
     const {pokemon} : {pokemon: PokemonFull} = location.state;
 
+    const [animated, setAnimated] = useState(false);
 
     return(
         <Flex direction="column" align="center" justify="space-around">
@@ -31,13 +32,16 @@ function PokePage() : JSX.Element{
                 <Text variant="display1" >{pokemon.name} </Text>
                 <Text variant="emphasis">#{(pokemon.id+"").padStart(4,'0')}</Text>
             </Heading>
-            
+
             <Grid columns={"1fr 1fr"}>
 
                 <Flex className="content-card image-card" direction="column" align="center">
-                    <img src={pokemon.imgUrl} />
 
-                    <Flex className="Types" direction="column">
+                    <Checkbox onChange={()=>setAnimated(!animated)} disabled={pokemon.imgUrlGif === null}>Animated</Checkbox>
+
+                    <Center className="pokemon-img"><img src={animated? pokemon.imgUrlGif : pokemon.imgUrl} /></Center>
+
+                    <Flex className="Types" direction="column" justify="center" align="center">
                         {pokemon.types.map((type)=><img src={type.imgUrl} key={type.name} />)}
                     </Flex>
                 </Flex>

@@ -11,8 +11,8 @@
 }
 
 .PokeCard{
-    background-color: var(--sl-bg-base-strong);
-    border: var(--sl-border-base-strong);
+    background-color: var(--sl-bg-base-soft);
+    border: var(--sl-border-base-soft);
     border-radius: var(--sl-radius-3);
     padding: 0.5rem 0.25rem 0.25rem;   
     min-height: 30rem;
@@ -25,4 +25,5 @@
 
 .PokeCard .Types{
     width: 65%;
+    min-height: 15%;
 }
