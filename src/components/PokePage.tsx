@@ -1,7 +1,24 @@
 import type { JSX } from "react";
-import type { PokemonFull } from "../PokemonController";
+import type { PokemonFull, Stat } from "../PokemonController";
 import { useLocation } from "react-router-dom";
-import { Center, Flex, Grid, Heading, Text } from "@vtex/shoreline";
+import { Flex, Grid, Heading, Text, Tooltip } from "@vtex/shoreline";
+import './pokepage.css';
+
+const MAX_STAT = 255;
+
+function StatBar({stat} : {stat:Stat}) : JSX.Element{
+
+    return <Tooltip label={stat.name+": "+stat.value}>
+                <Flex className="StatBar" justify="space-between">
+                    <Text variant="display3">{stat.name}: </Text>
+                    <div className="FullBar">
+                        <div className="Bar" style={{width:stat.value*100/MAX_STAT+"%"}}></div>
+                    </div>
+                </Flex>
+            </Tooltip>
+
+}
+
 
 function PokePage() : JSX.Element{
     const location = useLocation();
@@ -11,43 +28,40 @@ function PokePage() : JSX.Element{
     return(
         <Flex direction="column" align="center" justify="space-around">
             <Heading>
-                <Text variant="display1">{pokemon.name} </Text>
+                <Text variant="display1" >{pokemon.name} </Text>
                 <Text variant="emphasis">#{(pokemon.id+"").padStart(4,'0')}</Text>
             </Heading>
             
             <Grid columns={"1fr 1fr"}>
 
-                <div>
+                <Flex className="content-card image-card" direction="column" align="center">
                     <img src={pokemon.imgUrl} />
 
-                    <Flex direction="column" gap="var(--sl-space-2)">
+                    <Flex className="Types" direction="column">
                         {pokemon.types.map((type)=><img src={type.imgUrl} key={type.name} />)}
                     </Flex>
-                </div>
+                </Flex>
 
-                <Center>
-                    <Flex direction="column" >
+                <Flex className="Info" direction="column" align="center" justify="center">
+                    <Flex direction="column" className="content-card" >
                         {pokemon.stats.map((stat)=>{
-                            return <div>
-                                <Text variant="action">{stat.name}: </Text>
-                                <Text variant="caption1">{stat.value}</Text>
-                            </div>
+                            return <StatBar key={stat.name} stat={stat}></StatBar>
                         })}
                     </Flex>
 
-                    <Flex direction="column">
+                    <Flex direction="column" className="content-card">
                         <div>
-                            <Text variant="action">Weight: </Text>
-                            <Text variant="caption1">{pokemon.weight/10} kg</Text>
+                            <Text variant="display3">Weight: </Text>
+                            <Text variant="emphasis">{pokemon.weight/10} kg</Text>
                         </div>
 
                         <div>
-                            <Text variant="action">Height: </Text>
-                            <Text variant="caption1">{pokemon.height/10} m</Text>
+                            <Text variant="display3">Height: </Text>
+                            <Text variant="emphasis">{pokemon.height/10} m</Text>
                         </div>
 
                     </Flex>
-                </Center>
+                </Flex>
 
             </Grid>
 

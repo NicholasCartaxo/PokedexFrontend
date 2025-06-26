@@ -2,6 +2,10 @@
     margin: 1rem 10rem;
 }
 
+#PokedexGrid{
+    margin: 0.5rem 1rem;
+}
+
 #PokedexGrid *{
     box-sizing: border-box;
 }

@@ -140,6 +140,10 @@ function Pokedex() : JSX.Element{
         </CollectionView>
       
 
+      <CollectionRow>
+        <Pagination onPageChange={(newPage)=>setPage(newPage)} page={page} total={pokesLight.length} size={POKES_PER_PAGE}/>
+      </CollectionRow>
+
     </Collection>
   );
 

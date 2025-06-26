@@ -1,0 +1,30 @@
+.content-card{
+    padding: 1rem;
+    background-color: var(--sl-bg-base-soft);
+    border: var(--sl-border-base-strong);
+    border-radius: var(--sl-radius-2);
+}
+
+.StatBar .FullBar{
+    background-color: var(--sl-bg-accent);
+    border: var(--sl-border-accent);
+    border-radius: var(--sl-radius-3);
+    width: 15rem;
+    overflow: hidden;
+}
+
+.image-card{
+    min-height: 40rem;
+
+}
+
+.FullBar .Bar{
+    height: 100%;
+    background-color: var(--sl-bg-accent-strong);
+    border-radius: var(--sl-radius-3);
+    border: var(--sl-border-accent-strong);
+}
+
+.Types{
+    width: 50%;
+}
