@@ -2,6 +2,7 @@
   "name": "pokedexfrontend",
   "private": true,
   "version": "0.0.0",
+  "homepage": "https://nicholascartaxo.github.io/PokedexFrontend/",
   "type": "module",
   "scripts": {
     "dev": "vite",
