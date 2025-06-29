@@ -1,10 +1,14 @@
 import { useEffect, useState, type JSX } from "react";
-import type { PokemonFull, Stat } from "../PokemonController";
-import { useLocation } from "react-router-dom";
-import { Center, Checkbox, Flex, Grid, Heading, Text, Tooltip } from "@vtex/shoreline";
+import { PokemonFetch, PokemonFull, Stat } from "../PokemonController";
+import { useNavigate, useParams } from "react-router-dom";
+import { Button, Center, Checkbox, Flex, Grid, Heading, IconArrowLeft, IconArrowRight, Label, Skeleton, Text, Tooltip } from "@vtex/shoreline";
 import './pokepage.css';
 
 const MAX_STAT = 255;
+
+function formatId(id:number) : string{
+    return (id+"").padStart(4,'0')
+}
 
 function StatBar({stat} : {stat:Stat}) : JSX.Element{
 
@@ -19,19 +23,86 @@ function StatBar({stat} : {stat:Stat}) : JSX.Element{
 
 }
 
+function PokemonSideButton({pokemon, left} : {pokemon:PokemonFull, left:boolean}) : JSX.Element{
+    const navigate = useNavigate();
+    return( 
+        <Button asChild className={"SideButton "+(left?"left":"right")}  onClick={()=>navigate("../pokemon/"+pokemon?.id)}>
+                <Label>
+                {left ? 
+                <IconArrowLeft style={{order:-1}}/>
+                :
+                <IconArrowRight style={{order:1}}/>}
+                {pokemon.name}
+                #{formatId(pokemon.id)}
+            </Label>
+        </Button>
+    );
+}
+
+function PokePageSkeleton() : JSX.Element{
+    return <Flex  style={{position:"sticky"}} direction="column" align="center" justify="space-around">
+            <Heading>
+            </Heading>
+
+            <Grid columns={"1fr 1fr"}>
+
+                <Skeleton className="content-card image-card" />
+
+                <Flex direction="column" align="center" justify="center">
+                    <Skeleton className="content-card" />
+
+                    <Skeleton className="content-card"/>
+                </Flex>
+
+            </Grid>
+                
+
+        </Flex>
+}
 
 function PokePage() : JSX.Element{
-    const location = useLocation();
-    const {pokemon} : {pokemon: PokemonFull} = location.state;
+
+    const pF = new PokemonFetch();
 
     const [animated, setAnimated] = useState(false);
+    const [loading, setLoading] = useState(false);
 
-    return(
-        <Flex direction="column" align="center" justify="space-around">
+    const [pokemon, setPokemon] = useState(null as null | PokemonFull);
+    const [prev, setPrev] = useState(null as null | PokemonFull);
+    const [next, setNext] = useState(null as null | PokemonFull);
+
+    const id = useParams().pokeId;
+
+    useEffect(()=>{
+        setLoading(true);
+
+        if(!isNaN(Number(id))){
+            pF.fetchPokemon(Number(id)).then((pokemonNoType)=>{
+                if(pokemonNoType !== null){
+                    pokemonNoType.fetchFullTypes().then((pokemonFull)=>{
+                        setPokemon(pokemonFull);
+                        setLoading(false);
+                    })
+                }else setLoading(false);
+            });
+
+            pF.fetchPokemon(Number(id)-1).then((value)=>setPrev(value));
+            pF.fetchPokemon(Number(id)+1).then((value)=>setNext(value));
+        }else setLoading(false);
+
+    },[id])
+
+    if(loading) return <PokePageSkeleton/>;
+    else if(pokemon === null) return <>ERRO TODO</>;
+    else return (
+        <Flex  style={{position:"sticky"}} direction="column" align="center" justify="space-around">
             <Heading>
                 <Text variant="display1" >{pokemon.name} </Text>
-                <Text variant="emphasis">#{(pokemon.id+"").padStart(4,'0')}</Text>
+                <Text variant="emphasis">#{formatId(pokemon.id)}</Text>
             </Heading>
+
+            {prev?<PokemonSideButton pokemon={prev} left/>:<></>}
+            {next?<PokemonSideButton pokemon={next} left={false}/>:<></>}
 
             <Grid columns={"1fr 1fr"}>
 
@@ -46,7 +117,7 @@ function PokePage() : JSX.Element{
                     </Flex>
                 </Flex>
 
-                <Flex className="Info" direction="column" align="center" justify="center">
+                <Flex direction="column" align="center" justify="center">
                     <Flex direction="column" className="content-card" >
                         {pokemon.stats.map((stat)=>{
                             return <StatBar key={stat.name} stat={stat}></StatBar>
@@ -68,10 +139,7 @@ function PokePage() : JSX.Element{
                 </Flex>
 
             </Grid>
-
-            
-            
-            
+                
 
         </Flex>
     );

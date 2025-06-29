@@ -12,7 +12,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Layout />}>
           <Route index element={<Pokedex />} />
-          <Route path="PokePage" element={<PokePage />} />
+          <Route path="pokemon/:pokeId" element={<PokePage />} />
         </Route>
       </Routes>
     </BrowserRouter>

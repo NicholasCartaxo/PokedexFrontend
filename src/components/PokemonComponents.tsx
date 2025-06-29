@@ -9,7 +9,7 @@ export function PokeCard({pokemon} : {pokemon : PokemonFull}) : JSX.Element{
   const navigate = useNavigate();
 
   return (
-    <Flex className="PokeCard clickable" align="center" direction="column" onClick={()=>(navigate('PokePage',{state:{pokemon:pokemon}}))}>
+    <Flex className="PokeCard clickable" align="center" direction="column" onClick={()=>(navigate('pokemon/'+pokemon.id))}>
       <img className="PokemonImg" src={pokemon.imgUrl} />
 
       <Flex direction="column" align="center" gap="var(--sl-space-0)">

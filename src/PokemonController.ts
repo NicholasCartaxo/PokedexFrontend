@@ -4,11 +4,11 @@ function formatName(name : string) : string{
 
 export class PokemonFetch{
 
-    private static readonly POKEAPI_URL = "https://pokeapi.co/api/v2/pokemon/?limit=2000";
+    private static readonly POKEAPI_URL = "https://pokeapi.co/api/v2/pokemon/";
     private static readonly TYPEAPI_URL = "https://pokeapi.co/api/v2/type/";
 
     public async fetchAllPokemon() : Promise<PokemonLight[]> {
-        const response = await fetch(PokemonFetch.POKEAPI_URL);
+        const response = await fetch(PokemonFetch.POKEAPI_URL+"?limit=2000");
         if (!response.ok) {
             throw new Error(`Response status: ${response.status}`);
         }
@@ -23,6 +23,14 @@ export class PokemonFetch{
         }
         var typeLightList = response.json().then((value)=> value.results.map((value : TypeLightJson)=>new TypeLight(value)));
         return typeLightList;
+    }
+
+    public async fetchPokemon(id:number) : Promise<PokemonFull | null> {
+        const response = await fetch(PokemonFetch.POKEAPI_URL+id);
+        if (!response.ok) {
+            return null;
+        }
+        return response.json().then((value)=> new PokemonFull(value));
     }
 }
 
@@ -63,7 +71,7 @@ type PokemonFullJson = {name : string,
                     }
 
 export class PokemonFull{
-    
+
     public readonly name : string;
     public readonly imgUrl : string;
     public readonly imgUrlGif : string;
