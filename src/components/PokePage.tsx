@@ -75,6 +75,7 @@ function PokePage() : JSX.Element{
 
     useEffect(()=>{
         setLoading(true);
+        setAnimated(false);
 
         if(!isNaN(Number(id))){
             pF.fetchPokemon(Number(id)).then((pokemonNoType)=>{
