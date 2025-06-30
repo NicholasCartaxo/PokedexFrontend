@@ -1,7 +1,7 @@
 import { useEffect, useState, type JSX } from "react";
 import { PokemonFetch, PokemonFull, Stat } from "../PokemonController";
 import { useNavigate, useParams } from "react-router-dom";
-import { Button, Center, Checkbox, Collection, CollectionView, EmptyState, EmptyStateActions, EmptyStateIllustration, Flex, Grid, Heading, IconArrowLeft, IconArrowRight, Label, Skeleton, Text, Tooltip } from "@vtex/shoreline";
+import { Button, Center, Checkbox, Collection, CollectionView, Flex, Grid, Heading, IconArrowLeft, IconArrowRight, Label, Skeleton, Text, Tooltip } from "@vtex/shoreline";
 import './pokepage.css';
 
 const MAX_STAT = 255;
