@@ -1,7 +1,7 @@
 import { useEffect, useState, type JSX } from "react";
 import { PokemonFetch, PokemonFull, Stat } from "../PokemonController";
 import { useNavigate, useParams } from "react-router-dom";
-import { Button, Center, Checkbox, Flex, Grid, Heading, IconArrowLeft, IconArrowRight, Label, Skeleton, Text, Tooltip } from "@vtex/shoreline";
+import { Button, Center, Checkbox, Collection, CollectionView, EmptyState, EmptyStateActions, EmptyStateIllustration, Flex, Grid, Heading, IconArrowLeft, IconArrowRight, Label, Skeleton, Text, Tooltip } from "@vtex/shoreline";
 import './pokepage.css';
 
 const MAX_STAT = 255;
@@ -42,6 +42,7 @@ function PokemonSideButton({pokemon, left} : {pokemon:PokemonFull, left:boolean}
 function PokePageSkeleton() : JSX.Element{
     return <Flex  style={{position:"sticky"}} direction="column" align="center" justify="space-around">
             <Heading>
+                <Text variant="display1" >Loading...</Text>
             </Heading>
 
             <Grid columns={"1fr 1fr"}>
@@ -49,15 +50,30 @@ function PokePageSkeleton() : JSX.Element{
                 <Skeleton className="content-card image-card" />
 
                 <Flex direction="column" align="center" justify="center">
-                    <Skeleton className="content-card" />
+                    <Skeleton className="content-card" style={{height:"16rem",width:"27rem"}}/>
 
-                    <Skeleton className="content-card"/>
+                    <Skeleton className="content-card" style={{height:"6rem",width:"10rem"}}/>
                 </Flex>
 
             </Grid>
                 
 
         </Flex>
+}
+
+function PokePageNotFound() : JSX.Element{
+    const navigate = useNavigate();
+    return (
+    <Collection>
+        <CollectionView 
+        status="error"
+        messages={{
+          'error-heading': 'Pokemon not found',
+          'error-action': 'Go back',
+        }}
+        onError={() => navigate("../../")} />
+    </Collection>
+  );
 }
 
 function PokePage() : JSX.Element{
@@ -76,6 +92,7 @@ function PokePage() : JSX.Element{
     useEffect(()=>{
         setLoading(true);
         setAnimated(false);
+        setPokemon(null);
 
         if(!isNaN(Number(id))){
             pF.fetchPokemon(Number(id)).then((pokemonNoType)=>{
@@ -94,55 +111,61 @@ function PokePage() : JSX.Element{
     },[id])
 
     if(loading) return <PokePageSkeleton/>;
-    else if(pokemon === null) return <>ERRO TODO</>;
+    else if(pokemon === null) return <PokePageNotFound/>;
     else return (
-        <Flex  style={{position:"sticky"}} direction="column" align="center" justify="space-around">
-            <Heading>
-                <Text variant="display1" >{pokemon.name} </Text>
-                <Text variant="emphasis">#{formatId(pokemon.id)}</Text>
-            </Heading>
+        <Collection>
+            <CollectionView status="ready">
 
-            {prev?<PokemonSideButton pokemon={prev} left/>:<></>}
-            {next?<PokemonSideButton pokemon={next} left={false}/>:<></>}
+                <Flex  style={{position:"sticky"}} direction="column" align="center" justify="space-around">
+                    <Heading>
+                        <Text variant="display1" >{pokemon.name} </Text>
+                        <Text variant="emphasis">#{formatId(pokemon.id)}</Text>
+                    </Heading>
 
-            <Grid columns={"1fr 1fr"}>
+                    {prev?<PokemonSideButton pokemon={prev} left/>:<></>}
+                    {next?<PokemonSideButton pokemon={next} left={false}/>:<></>}
 
-                <Flex className="content-card image-card" direction="column" align="center">
+                    <Grid columns={"1fr 1fr"}>
 
-                    <Checkbox onChange={()=>setAnimated(!animated)} disabled={pokemon.imgUrlGif === null}>Animated</Checkbox>
+                        <Flex className="content-card image-card" direction="column" align="center">
 
-                    <Center className="pokemon-img"><img src={animated? pokemon.imgUrlGif : pokemon.imgUrl} /></Center>
+                            <Checkbox onChange={()=>setAnimated(!animated)} disabled={pokemon.imgUrlGif === null}>Animated</Checkbox>
 
-                    <Flex className="Types" direction="column" justify="center" align="center">
-                        {pokemon.types.map((type)=><img src={type.imgUrl} key={type.name} />)}
-                    </Flex>
+                            <Center className="pokemon-img"><img src={animated? pokemon.imgUrlGif : pokemon.imgUrl} /></Center>
+
+                            <Flex className="Types" direction="column" justify="center" align="center">
+                                {pokemon.types.map((type)=><img src={type.imgUrl} key={type.name} />)}
+                            </Flex>
+                        </Flex>
+
+                        <Flex direction="column" align="center" justify="center">
+                            <Flex direction="column" className="content-card" >
+                                {pokemon.stats.map((stat)=>{
+                                    return <StatBar key={stat.name} stat={stat}></StatBar>
+                                })}
+                            </Flex>
+
+                            <Flex direction="column" className="content-card">
+                                <div>
+                                    <Text variant="display3">Weight: </Text>
+                                    <Text variant="emphasis">{pokemon.weight/10} kg</Text>
+                                </div>
+
+                                <div>
+                                    <Text variant="display3">Height: </Text>
+                                    <Text variant="emphasis">{pokemon.height/10} m</Text>
+                                </div>
+
+                            </Flex>
+                        </Flex>
+
+                    </Grid>
+                        
                 </Flex>
 
-                <Flex direction="column" align="center" justify="center">
-                    <Flex direction="column" className="content-card" >
-                        {pokemon.stats.map((stat)=>{
-                            return <StatBar key={stat.name} stat={stat}></StatBar>
-                        })}
-                    </Flex>
-
-                    <Flex direction="column" className="content-card">
-                        <div>
-                            <Text variant="display3">Weight: </Text>
-                            <Text variant="emphasis">{pokemon.weight/10} kg</Text>
-                        </div>
-
-                        <div>
-                            <Text variant="display3">Height: </Text>
-                            <Text variant="emphasis">{pokemon.height/10} m</Text>
-                        </div>
-
-                    </Flex>
-                </Flex>
-
-            </Grid>
-                
-
-        </Flex>
+            </CollectionView>
+        </Collection>
+        
     );
 }
 
