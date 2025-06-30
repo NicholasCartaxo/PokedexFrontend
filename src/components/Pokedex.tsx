@@ -74,7 +74,7 @@ function Pokedex() : JSX.Element{
 
 
   useEffect(()=>{
-    
+    window.scrollTo(0,0);
     setLoading(true);
 
     const promises = pokesLight.slice((page-1)*POKES_PER_PAGE,page*POKES_PER_PAGE).map((pokeLight)=>{
