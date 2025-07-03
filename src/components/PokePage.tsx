@@ -94,19 +94,23 @@ function PokePage() : JSX.Element{
         setAnimated(false);
         setPokemon(null);
 
-        if(!isNaN(Number(id))){
-            pF.fetchPokemon(Number(id)).then((pokemonNoType)=>{
-                if(pokemonNoType !== null){
-                    pokemonNoType.fetchFullTypes().then((pokemonFull)=>{
-                        setPokemon(pokemonFull);
-                        setLoading(false);
-                    })
-                }else setLoading(false);
-            });
+        new Promise(resolve => setTimeout(resolve,100)).then(()=>{
 
-            pF.fetchPokemon(Number(id)-1).then((value)=>setPrev(value));
-            pF.fetchPokemon(Number(id)+1).then((value)=>setNext(value));
-        }else setLoading(false);
+            if(!isNaN(Number(id))){
+                pF.fetchPokemon(Number(id)).then((pokemonNoType)=>{
+                    if(pokemonNoType !== null){
+                        pokemonNoType.fetchFullTypes().then((pokemonFull)=>{
+                            setPokemon(pokemonFull);
+                            setLoading(false);
+                        })
+                    }else setLoading(false);
+                });
+
+                pF.fetchPokemon(Number(id)-1).then((value)=>setPrev(value));
+                pF.fetchPokemon(Number(id)+1).then((value)=>setNext(value));
+            }else setLoading(false);
+
+        });
 
     },[id])
 
